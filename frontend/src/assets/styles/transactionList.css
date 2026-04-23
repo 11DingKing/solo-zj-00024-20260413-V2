@@ -1,0 +1,135 @@
+.t-box {
+    margin-bottom: 15px;
+}
+.t-box .date {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+}
+.t-list {
+    border-radius: 10px;
+    margin: 10px 0;
+    background-color: var(--hover);
+}
+.t-list .t-row {
+    padding: 10px;
+    display: flex;
+}
+.t-list .t-row:first-of-type {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.t-list .t-row:last-of-type {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.t-list .t-row:not(:last-of-type) {
+    border-bottom: 2px solid var(--main);
+}
+.t-list .t-row:hover {
+    background-color: var(--main);
+}
+.t-row-left {
+    flex: 1;
+}
+.t-row-left p:first-of-type {
+    color: var(--text);font-size: 14px;
+}
+.t-row-left p:last-of-type{
+    color: grey;
+    font-size: 13px;
+}
+.t-row-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.t-row-right p {
+    font-size: 17px;
+    color: var(--text);
+}
+
+.export-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding: 15px;
+    background-color: var(--hover);
+    border-radius: 10px;
+}
+
+.date-filters {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-filter label {
+    color: var(--text);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.date-filter input[type="date"] {
+    padding: 8px 12px;
+    border: 2px solid var(--main);
+    border-radius: 8px;
+    background-color: var(--third);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.date-filter input[type="date"]:focus {
+    outline: none;
+    border-color: var(--second);
+}
+
+.export-btn {
+    padding: 10px 25px;
+    width: auto;
+    min-width: 120px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.export-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .export-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .date-filters {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .date-filter {
+        justify-content: space-between;
+    }
+
+    .export-btn {
+        width: 100%;
+    }
+}

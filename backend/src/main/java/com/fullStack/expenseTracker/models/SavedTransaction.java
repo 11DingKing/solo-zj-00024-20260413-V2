@@ -25,7 +25,7 @@ public class SavedTransaction {
 
     private int categoryId;
 
-    private double amount;
+    private long amount;
 
     private String description;
 

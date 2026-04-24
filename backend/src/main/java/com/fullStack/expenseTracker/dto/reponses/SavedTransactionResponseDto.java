@@ -5,11 +5,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SavedTransactionResponseDto {
     private long planId;
 
@@ -18,6 +20,10 @@ public class SavedTransactionResponseDto {
     private String categoryName;
 
     private double amount;
+
+    private long amountInFen;
+
+    private BigDecimal amountInYuan;
 
     private String description;
 

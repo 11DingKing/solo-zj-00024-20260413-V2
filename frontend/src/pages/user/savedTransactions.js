@@ -90,6 +90,13 @@ function SavedTransactions() {
 
 export default SavedTransactions;
 
+function formatAmount(transaction) {
+    const amount = transaction.amountInYuan !== undefined && transaction.amountInYuan !== null
+        ? transaction.amountInYuan
+        : transaction.amount;
+    return Number(amount).toFixed(2);
+}
+
 function SavedTransactionList({ list, saveTransaction, skipTransaction }) {
     return (
         <div className='st-list'>
@@ -98,7 +105,7 @@ function SavedTransactionList({ list, saveTransaction, skipTransaction }) {
                 t.dueInformation && <div className='st-card' key={t.planId}>
                 <div className='topic'>
                     <h4>{t.categoryName}</h4>
-                    <h4>{ t.transactionType === 1 ? "- " : "+ " } Rs. {t.amount}</h4>
+                    <h4>{ t.transactionType === 1 ? "- " : "+ " } Rs. {formatAmount(t)}</h4>
                 </div>
                 <p>
                     {t.description}

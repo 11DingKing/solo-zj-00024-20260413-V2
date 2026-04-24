@@ -18,11 +18,11 @@ public class Budget {
     long budgetId;
     long userId;
     Integer categoryId;
-    double amount;
+    long amount;
     int month;
     long year;
 
-    public Budget(long userId, Integer categoryId, double amount, int month, long year) {
+    public Budget(long userId, Integer categoryId, long amount, int month, long year) {
         this.userId = userId;
         this.categoryId = categoryId;
         this.amount = amount;

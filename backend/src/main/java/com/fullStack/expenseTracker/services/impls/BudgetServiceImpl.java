@@ -48,14 +48,16 @@ public class BudgetServiceImpl implements BudgetService {
             throw new UserNotFoundException("User not found with id " + budgetRequest.getUserId());
         }
         try {
+            long amountInFen = Transaction.yuanToFen(budgetRequest.getAmount());
+            
             Budget budget = budgetRepository.findByUserIdAndMonthAndYear(budgetRequest.getUserId(), LocalDate.now().getMonthValue(), LocalDate.now().getYear());
             if (budget == null){
                 budget = new Budget(
-                        budgetRequest.getUserId(), null, budgetRequest.getAmount(), LocalDate.now().getMonthValue(), LocalDate.now().getYear()
+                        budgetRequest.getUserId(), null, amountInFen, LocalDate.now().getMonthValue(), LocalDate.now().getYear()
                 );
             }
             else {
-                budget.setAmount(budgetRequest.getAmount());
+                budget.setAmount(amountInFen);
             }
 
             budgetRepository.save(budget);
@@ -75,7 +77,8 @@ public class BudgetServiceImpl implements BudgetService {
     public ResponseEntity<ApiResponseDto<?>> getBudgetByMonth(long userId, int month, long year) throws UserServiceLogicException {
         try {
             Budget budget = budgetRepository.findByUserIdAndMonthAndYear(userId, month, year);
-            double amount = budget == null ? 0 : budget.getAmount();
+            long amountInFen = budget == null ? 0L : budget.getAmount();
+            double amount = Transaction.fenToYuanAsDouble(amountInFen);
 
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(
                     ApiResponseStatus.SUCCESS,
@@ -99,6 +102,7 @@ public class BudgetServiceImpl implements BudgetService {
         try {
             int month = budgetRequest.getMonth() != null ? budgetRequest.getMonth() : LocalDate.now().getMonthValue();
             long year = budgetRequest.getYear() != null ? budgetRequest.getYear() : LocalDate.now().getYear();
+            long amountInFen = Transaction.yuanToFen(budgetRequest.getAmount());
             
             Optional<Budget> existingBudget = budgetRepository.findByUserIdAndCategoryIdAndMonthAndYear(
                     budgetRequest.getUserId(), budgetRequest.getCategoryId(), month, year);
@@ -108,13 +112,13 @@ public class BudgetServiceImpl implements BudgetService {
                 budget = new Budget(
                         budgetRequest.getUserId(), 
                         budgetRequest.getCategoryId(), 
-                        budgetRequest.getAmount(), 
+                        amountInFen, 
                         month, 
                         year
                 );
             } else {
                 budget = existingBudget.get();
-                budget.setAmount(budgetRequest.getAmount());
+                budget.setAmount(amountInFen);
             }
 
             budgetRepository.save(budget);
@@ -134,11 +138,13 @@ public class BudgetServiceImpl implements BudgetService {
     public ResponseEntity<ApiResponseDto<?>> getCategoryBudget(long userId, Integer categoryId, int month, long year) throws UserServiceLogicException {
         try {
             Optional<Budget> budget = budgetRepository.findByUserIdAndCategoryIdAndMonthAndYear(userId, categoryId, month, year);
+            long amountInFen = budget.map(Budget::getAmount).orElse(0L);
+            double amount = Transaction.fenToYuanAsDouble(amountInFen);
             
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(
                     ApiResponseStatus.SUCCESS,
                     HttpStatus.OK,
-                    budget.map(Budget::getAmount).orElse(0.0)
+                    amount
             ));
         } catch (Exception e) {
             log.error("Failed to fetch category budget: " + e.getMessage());
@@ -189,13 +195,14 @@ public class BudgetServiceImpl implements BudgetService {
                         userEmail, budget.getCategoryId(), month, (int) year);
                 spentAmountInFen = spentAmountInFen == null ? 0L : spentAmountInFen;
                 double spentAmount = Transaction.fenToYuanAsDouble(spentAmountInFen);
+                double budgetAmount = Transaction.fenToYuanAsDouble(budget.getAmount());
                 
-                double percentage = budget.getAmount() > 0 ? (spentAmount / budget.getAmount()) * 100 : 0;
+                double percentage = budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0;
                 
                 BudgetProgressDto progress = new BudgetProgressDto(
                         category.getCategoryId(),
                         category.getCategoryName(),
-                        budget.getAmount(),
+                        budgetAmount,
                         spentAmount,
                         percentage
                 );

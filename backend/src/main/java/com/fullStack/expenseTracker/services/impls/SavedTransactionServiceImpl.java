@@ -104,7 +104,7 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
                         .orElse(null);
 
                 plannedTransaction.setTransactionTypeId(categoryService.getCategoryById(requestDto.getCategoryId()).getTransactionType().getTransactionTypeId());
-                plannedTransaction.setAmount(requestDto.getAmount());
+                plannedTransaction.setAmount(Transaction.yuanToFen(requestDto.getAmount()));
                 plannedTransaction.setDescription(requestDto.getDescription());
                 plannedTransaction.setFrequency(requestDto.getFrequency());
                 plannedTransaction.setUpcomingDate(requestDto.getUpcomingDate());
@@ -238,12 +238,13 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
                 SavedTransaction plannedTransaction = savedTransactionRepository.findById(savedTransactionId)
                         .orElse(null);
 
+                SavedTransactionResponseDto dto = savedTransactionToDto(plannedTransaction);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ApiResponseDto<>(
                                 ApiResponseStatus.SUCCESS,
                                 HttpStatus.OK,
-                                plannedTransaction
+                                dto
                         )
                 );
             }
@@ -258,7 +259,7 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
                 .transactionTypeId(categoryService.getCategoryById(requestDto.getCategoryId()).getTransactionType().getTransactionTypeId())
                 .categoryId(requestDto.getCategoryId())
                 .userId(requestDto.getUserId())
-                .amount(requestDto.getAmount())
+                .amount(Transaction.yuanToFen(requestDto.getAmount()))
                 .description(requestDto.getDescription())
                 .upcomingDate(requestDto.getUpcomingDate())
                 .frequency(requestDto.getFrequency())
@@ -271,7 +272,7 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
                 userRepository.findById(savedTransaction.getUserId()).orElse(null),
                 categoryService.getCategoryById(savedTransaction.getCategoryId()),
                 savedTransaction.getDescription(),
-                Transaction.yuanToFen(savedTransaction.getAmount()),
+                savedTransaction.getAmount(),
                 savedTransaction.getUpcomingDate()
         );
     }
@@ -288,11 +289,14 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
 
     private SavedTransactionResponseDto savedTransactionToDto(SavedTransaction savedTransaction)
             throws CategoryNotFoundException {
+        long amountInFen = savedTransaction.getAmount();
         return new SavedTransactionResponseDto(
                 savedTransaction.getPlanId(),
                 savedTransaction.getTransactionTypeId(),
                 categoryService.getCategoryById(savedTransaction.getCategoryId()).getCategoryName(),
-                savedTransaction.getAmount(),
+                Transaction.fenToYuanAsDouble(amountInFen),
+                amountInFen,
+                Transaction.fenToYuan(amountInFen),
                 savedTransaction.getDescription(),
                 savedTransaction.getFrequency(),
                 getDueInformation(savedTransaction)

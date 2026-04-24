@@ -10,11 +10,14 @@ function SavedTransactionForm({categories, onSubmit, isDeleting, isSaving, trans
 
     useEffect(() => {
         if (transaction && transaction.planId) {
+            const amount = transaction.amountInYuan !== undefined && transaction.amountInYuan !== null
+                ? transaction.amountInYuan
+                : transaction.amount;
             reset({
                 category: String(transaction.categoryId),
                 frequency: transaction.frequency,
                 description: transaction.description,
-                amount: transaction.amount,
+                amount: Number(amount).toFixed(2),
                 date: transaction.upcomingDate.split('T')[0]
             })
         }

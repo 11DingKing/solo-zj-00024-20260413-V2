@@ -136,7 +136,7 @@ public class TransactionServiceImpl implements TransactionService {
                 () -> new TransactionNotFoundException("Transaction not found with id : " + transactionId)
         );
 
-        transaction.setAmount(transactionRequestDto.getAmount());
+        transaction.setAmount(Transaction.yuanToFen(transactionRequestDto.getAmount()));
         transaction.setDate(transactionRequestDto.getDate());
         transaction.setUser(userService.findByEmail(transactionRequestDto.getUserEmail()));
         transaction.setCategory(categoryService.getCategoryById(transactionRequestDto.getCategoryId()));
@@ -228,7 +228,7 @@ public class TransactionServiceImpl implements TransactionService {
                 userService.findByEmail(transactionRequestDto.getUserEmail()),
                 categoryService.getCategoryById(transactionRequestDto.getCategoryId()),
                 transactionRequestDto.getDescription(),
-                transactionRequestDto.getAmount(),
+                Transaction.yuanToFen(transactionRequestDto.getAmount()),
                 transactionRequestDto.getDate()
         );
     }
@@ -240,7 +240,9 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction.getCategory().getCategoryName(),
                 transaction.getCategory().getTransactionType().getTransactionTypeId(),
                 transaction.getDescription(),
+                Transaction.fenToYuanAsDouble(transaction.getAmount()),
                 transaction.getAmount(),
+                Transaction.fenToYuan(transaction.getAmount()),
                 transaction.getDate(),
                 transaction.getUser().getEmail()
         );
@@ -293,7 +295,7 @@ public class TransactionServiceImpl implements TransactionService {
                 String date = transaction.getDate().toString();
                 String category = escapeCsvField(transaction.getCategory().getCategoryName());
                 String description = escapeCsvField(transaction.getDescription());
-                double amount = transaction.getAmount();
+                double amount = Transaction.fenToYuanAsDouble(transaction.getAmount());
                 String type = transaction.getCategory().getTransactionType().getTransactionTypeName()
                         .equals(com.fullStack.expenseTracker.enums.ETransactionType.TYPE_EXPENSE) 
                         ? "支出" : "收入";

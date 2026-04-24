@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +23,10 @@ public class TransactionResponseDto {
     private String description;
 
     private double amount;
+
+    private long amountInFen;
+
+    private BigDecimal amountInYuan;
 
     private LocalDate date;
 

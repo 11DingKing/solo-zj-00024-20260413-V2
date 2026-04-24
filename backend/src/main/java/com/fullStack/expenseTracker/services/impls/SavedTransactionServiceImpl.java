@@ -271,7 +271,7 @@ public class SavedTransactionServiceImpl implements SavedTransactionService {
                 userRepository.findById(savedTransaction.getUserId()).orElse(null),
                 categoryService.getCategoryById(savedTransaction.getCategoryId()),
                 savedTransaction.getDescription(),
-                savedTransaction.getAmount(),
+                Transaction.yuanToFen(savedTransaction.getAmount()),
                 savedTransaction.getUpcomingDate()
         );
     }

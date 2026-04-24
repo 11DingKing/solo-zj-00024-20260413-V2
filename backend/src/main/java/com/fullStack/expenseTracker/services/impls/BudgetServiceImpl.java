@@ -8,6 +8,7 @@ import com.fullStack.expenseTracker.exceptions.UserNotFoundException;
 import com.fullStack.expenseTracker.exceptions.UserServiceLogicException;
 import com.fullStack.expenseTracker.models.Budget;
 import com.fullStack.expenseTracker.models.Category;
+import com.fullStack.expenseTracker.models.Transaction;
 import com.fullStack.expenseTracker.repository.BudgetRepository;
 import com.fullStack.expenseTracker.repository.CategoryRepository;
 import com.fullStack.expenseTracker.repository.TransactionRepository;
@@ -184,9 +185,10 @@ public class BudgetServiceImpl implements BudgetService {
                 }
                 Category category = categoryOpt.get();
                 
-                Double spentAmount = transactionRepository.findTotalByUserAndCategory(
+                Long spentAmountInFen = transactionRepository.findTotalByUserAndCategory(
                         userEmail, budget.getCategoryId(), month, (int) year);
-                spentAmount = spentAmount == null ? 0.0 : spentAmount;
+                spentAmountInFen = spentAmountInFen == null ? 0L : spentAmountInFen;
+                double spentAmount = Transaction.fenToYuanAsDouble(spentAmountInFen);
                 
                 double percentage = budget.getAmount() > 0 ? (spentAmount / budget.getAmount()) * 100 : 0;
                 

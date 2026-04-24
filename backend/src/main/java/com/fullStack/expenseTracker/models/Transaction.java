@@ -6,8 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Data
@@ -27,15 +28,34 @@ public class Transaction {
     @JoinColumn(name = "categoryId")
     private Category category;
     private String description;
-    private double amount;
+    private long amount;
     private LocalDate date;
 
-    public Transaction(User user, Category category, String description, double amount, LocalDate date) {
+    public Transaction(User user, Category category, String description, long amount, LocalDate date) {
         this.user = user;
         this.category = category;
         this.description = description;
         this.amount = amount;
         this.date = date;
+    }
+
+    public static long yuanToFen(BigDecimal yuan) {
+        if (yuan == null) {
+            return 0;
+        }
+        return yuan.multiply(new BigDecimal("100")).setScale(0, RoundingMode.HALF_UP).longValue();
+    }
+
+    public static BigDecimal fenToYuan(long fen) {
+        return new BigDecimal(fen).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+    }
+
+    public static long yuanToFen(double yuan) {
+        return yuanToFen(BigDecimal.valueOf(yuan));
+    }
+
+    public static double fenToYuanAsDouble(long fen) {
+        return fenToYuan(fen).doubleValue();
     }
 
 

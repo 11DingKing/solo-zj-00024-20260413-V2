@@ -11,10 +11,13 @@ function TransactionForm({ categories, onSubmit, isDeleting, isSaving, transacti
 
     useEffect(() => {
         if (transaction && transaction.transactionId) {
+            const amount = transaction.amountInYuan !== undefined && transaction.amountInYuan !== null
+                ? transaction.amountInYuan
+                : transaction.amount;
             reset({
                 category: String(transaction.categoryId),
                 description: transaction.description,
-                amount: transaction.amount,
+                amount: Number(amount).toFixed(2),
                 date: transaction.date.split('T')[0]
             })
         }

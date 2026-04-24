@@ -21,7 +21,7 @@ function TransactionList({ list }) {
                                                 <p> {
                                                         t.transactionType === 1 ? "- " : "+ "
                                                     }
-                                                    Rs. {t.amount}</p>
+                                                    Rs. {formatAmount(t)}</p>
                                             </div>
                                     </Link>
                                 ))
@@ -33,6 +33,13 @@ function TransactionList({ list }) {
 
         </>
     )
+}
+
+function formatAmount(transaction) {
+    const amount = transaction.amountInYuan !== undefined && transaction.amountInYuan !== null
+        ? transaction.amountInYuan
+        : transaction.amount;
+    return Number(amount).toFixed(2);
 }
 
 function formatDate(dateString) {

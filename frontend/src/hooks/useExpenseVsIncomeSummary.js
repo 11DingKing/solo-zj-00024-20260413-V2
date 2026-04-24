@@ -28,10 +28,20 @@ function useExpenseVsIncomeSummary(months) {
     const generateData = (fetchedData) => {
         const finalData = months.map(({ id, monthName }) => {
             const monthData = fetchedData.find((t) => t.month === id)
+            let totalIncome = 0
+            let totalExpense = 0
+            if (monthData) {
+                totalIncome = monthData.totalIncomeInYuan !== undefined && monthData.totalIncomeInYuan !== null
+                    ? monthData.totalIncomeInYuan
+                    : monthData.total_income
+                totalExpense = monthData.totalExpenseInYuan !== undefined && monthData.totalExpenseInYuan !== null
+                    ? monthData.totalExpenseInYuan
+                    : monthData.total_expense
+            }
             return {
                 id, monthName,
-                totalIncome: monthData ? monthData.total_income : 0,
-                totalExpense: monthData ? monthData.total_expense : 0
+                totalIncome: Number(totalIncome),
+                totalExpense: Number(totalExpense)
             }
         })
         setData(finalData)
